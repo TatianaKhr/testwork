@@ -47,6 +47,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+
     public function getTitleAttribute()
     {
         return ($this->last_name && $this->name) ? $this->last_name . ' ' . $this->name : $this->phone;

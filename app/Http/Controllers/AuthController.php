@@ -2,9 +2,10 @@
 
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
-{    
+{
     public function login()
     {
         return view('auth.login');
@@ -18,21 +19,23 @@ class AuthController extends Controller
 	}
 
     public function authenticate(Request $request,Guard $auth)
-	{	
+	{
+
 		$this->validate($request, [
-			'login' => 'required|email', 
+			'login' => 'required|email',
 			'password' => 'required',
 		]);
-        
+
 		$credentials = [
 			'email' => $request->input('login'),
 			'password' => $request->input('password'),
 		];
 
+
 		if ($auth->attempt($credentials, $request->has('remember'))){
 
             $request->session()->regenerate();
-            
+
 			return redirect()->intended($this->redirectPath());
 		}
 
@@ -42,7 +45,7 @@ class AuthController extends Controller
 						'email' => $this->getFailedLoginMessage(),
 					]);
     }
-    
+
     /**
 	 * Get the failed login message.
 	 *
@@ -52,7 +55,7 @@ class AuthController extends Controller
 	{
 		return 'These credentials do not match our records.';
     }
-    
+
     /**
 	 * Get the post register / login redirect path.
 	 *
@@ -77,5 +80,15 @@ class AuthController extends Controller
 	{
 		return property_exists($this, 'loginPath') ? $this->loginPath : '/auth/login';
 	}
+
+//    /**
+//     * Get the path to the login route.
+//     *
+//     * @return string
+//     */
+//    public function loginPath()
+//    {
+//        return property_exists($this, 'loginPath') ? $this->loginPath : '/auth/login';
+//    }
 
 }
